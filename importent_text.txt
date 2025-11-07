@@ -1,3 +1,5 @@
+((-- https://dennisivy.com/django-class-based-views --))
+
 user is default django gives = sessions also like user
 
 * from django.views.generic.list import ListView (what is this  )
