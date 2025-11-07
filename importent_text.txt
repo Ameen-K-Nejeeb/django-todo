@@ -1,0 +1,16 @@
+user is default django gives = sessions also like user
+
+* from django.views.generic.list import ListView (what is this  )
+-This works fine, but when your app grows, you’ll repeat this same pattern many times — for every model.
+-That’s why Django gives you generic class-based views (like ListView and DetailView) — to reduce repetition.
+
+*ListView =
+=a shortcut to display multiple items (rows) from a model in a webpage
+
+* DetailView
+-Fetches a single object from the database (based on the ID or slug in the URL)
+-Sends it to the template
+-Uses a default context name object (or your own context_object_name)
+-Uses a default template name like task_detail.html
+*as_view() = It turns your class into a view function that Django can call when someone visits that URL.
+
