@@ -16,3 +16,6 @@ user is default django gives = sessions also like user
 -Uses a default template name like task_detail.html
 *as_view() = It turns your class into a view function that Django can call when someone visits that URL.
 
+*from django.urls import reverse_lazy
+-success_url = reverse_lazy('task')
+-That’s why it’s called “lazy” — it delays the resolution until the view is executed.
