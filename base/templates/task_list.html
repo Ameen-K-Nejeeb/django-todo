@@ -1,15 +1,16 @@
 
 {% if request.user.is_authenticated %}
-
-  <p>{{request.user}}</p>
-  <a href="">Log-Out</a>
-
-  {% else %}
-
+  <p>Welcome, <strong>{{ request.user.username }}</strong>!</p>
+  <form method="post" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+  </form>
+{% else %}
   <a href="{% url 'login'  %}">Login</a>
-  
+
 {% endif %}
 
+<hr>
 <h1>My To Do Lists</h1>
 
 <a href="{% url 'task-create'  %}">Add item</a>
