@@ -7,9 +7,13 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
 from django.contrib.auth.views import LoginView,LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import TemplateView, UpdateView
 
 from django.urls import reverse_lazy
+from django.contrib import messages
 
 # Create your views here.
 
@@ -94,3 +98,50 @@ class TaskDelete(LoginRequiredMixin,DeleteView):
     context_object_name = 'task'
     success_url = reverse_lazy('tasks')
     template_name = 'task_confirm_delete.html'
+
+
+class AdminLoginView(LoginView):
+    template_name = 'admin_login.html'
+
+    def get_success_url(self):
+        # Allow only staff/superusers
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return reverse_lazy('admin-dashboard')
+        messages.error(self.request, "Access Denied: Only Admins can log in here.")
+        return reverse_lazy('login')
+
+# ✅ Admin Logout View
+class AdminLogoutView(LogoutView):
+    next_page = 'admin-login'
+
+
+# ✅ Admin Dashboard (only admin can access)
+class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'admin_dashboard.html'
+
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Admin access required.")
+        return redirect('admin-login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()
+        return context
+
+
+# ✅ Edit User (only admin)
+class AdminUserEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = User
+    fields = ['username', 'email']
+    template_name = 'admin_user_edit.html'
+    success_url = reverse_lazy('admin-dashboard')
+
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Admin access required.")
+        return redirect('admin-login')
