@@ -16,6 +16,32 @@ user is default django gives = sessions also like user
 -Uses a default template name like task_detail.html
 *as_view() = It turns your class into a view function that Django can call when someone visits that URL.
 
+---(
+    ListView → shows a list of objects (like all tasks).
+    DetailView → shows one specific object (like one task’s details).
+    CreateView → handles adding a new record to the database.
+    UpdateView → allows editing existing records.
+    DeleteView → allows deleting a record.
+    FormView → used for custom forms (like user registration).
+
+    LoginView → a ready-made class view for handling login.
+    LogoutView → handles user logout automatically.
+)---
+
+from django.contrib.auth import login
+Used to log in the user programmatically after registration.
+
+*from django.contrib.auth.mixins import LoginRequiredMixin
+-A mixin that restricts access to logged-in users only.
+-If a user isn’t logged in, it automatically redirects them to the login page.
+
+*from django.urls import reverse_lazy
+-reverse_lazy dynamically generates URLs by view name.
+-It’s “lazy” because it only resolves when needed (used in class views).
+
+*LoginRequiredMixin → restricts view only to logged-in users.
+
+
 *from django.urls import reverse_lazy
 -success_url = reverse_lazy('task')
 -That’s why it’s called “lazy” — it delays the resolution until the view is executed.
