@@ -41,7 +41,11 @@ class RegisterPage(FormView):
         return super(RegisterPage,self).get(*args, **kwargs)
     
      
-    
+
+class CustomLogoutView(LogoutView):
+    next_page = 'login'
+
+
 
 class TaskList(LoginRequiredMixin,ListView):
     model = Task
@@ -89,4 +93,4 @@ class TaskDelete(LoginRequiredMixin,DeleteView):
     model = Task
     context_object_name = 'task'
     success_url = reverse_lazy('tasks')
-    template_name = 'task_form.html'
+    template_name = 'task_confirm_delete.html'

@@ -13,9 +13,11 @@
 
   {% if request.user.is_authenticated %}
   <p>Welcome, <strong>{{ request.user.username }}</strong>!</p>
-  <form method="post" action="{% url 'logout' %}">
+  <form method="POST" action= "{% url 'logout' %}" >
     {% csrf_token %}
-    <a type="submit">Logout</a>
+    <!-- <a href="{% url 'logout' %}">Logout</a> -->
+    <button type="submit" class="button">Logout</button>
+
   </form>
   {% else %}
   <a href="{% url 'login'  %}">Login</a>
