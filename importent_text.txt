@@ -46,6 +46,8 @@ Used to log in the user programmatically after registration.
 -success_url = reverse_lazy('task')
 -That’s why it’s called “lazy” — it delays the resolution until the view is executed.
 
+*pluralize is a Django template filter used to automatically add a plural suffix (usually “s”) when needed.
+
 *uses
 -from django.contrib.auth.views import LoginView,LogoutView
 -from django.contrib.auth.mixins import LoginRequiredMixin

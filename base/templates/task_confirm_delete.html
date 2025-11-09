@@ -1,4 +1,6 @@
+{% extends "main.html" %}
 
+{% block content %}
 <a href="{% url 'tasks' %}">Go Back</a>
 
 <form action="" method="POST">
@@ -8,3 +10,5 @@
     <input type="Delete" value=" submit">
 
 </form>
+
+{% endblock content %}
