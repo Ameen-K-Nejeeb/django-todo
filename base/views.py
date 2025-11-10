@@ -68,6 +68,13 @@ class TaskList(LoginRequiredMixin,ListView):
 
         context['search_input'] = search_input
         return context
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Prevent showing cached page after logout
+        if not request.user.is_authenticated:
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
+
 
     
 
