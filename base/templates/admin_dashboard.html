@@ -3,22 +3,16 @@
 <div class="header-bar" style="justify-content:space-between;">
   
   {% if request.user.is_authenticated %}
-    <h2>Admin({{request.user.username}}) Dashboard</h2>
-  <br><form method="POST" action= "{% url 'admin-logout' %}" >
-    {% csrf_token %}
-    <!-- <a href="{% url 'logout' %}">Logout</a> -->
-    <button type="submit" class="button">Logout</button>
-
-  </form>
-  {% else %}
-  <a href="{% url 'admin-login'  %}">Login</a>
+    <h2>Admin ({{ request.user.username }}) Dashboard</h2>
+    <form method="POST" action="{% url 'admin-logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="button">Logout</button>
+    </form>
 
   {% endif %}
-</div>         
+</div>
 
 <div class="card-body">
-  <div class="card-body">
-
   {% if messages %}
     {% for message in messages %}
       {% if message.tags == 'error' %}
@@ -30,7 +24,6 @@
       {% endif %}
     {% endfor %}
   {% endif %}
-
 
   <table border="1" cellpadding="10" style="width:100%; border-collapse: collapse;">
     <tr>
@@ -54,11 +47,15 @@
         {% endif %}
       </td>
       <td>
-        <a href="{% url 'admin-user-edit' user.id %}">Edit</a> |
-        {% if user.is_active %}
-          <a href="{% url 'toggle-user-status' user.id %}" style="color:red;">Deactivate</a>
+        {% if not user.is_superuser and not user.is_staff %}
+          <a href="{% url 'admin-user-edit' user.id %}">Edit</a> |
+          {% if user.is_active %}
+            <a href="{% url 'toggle-user-status' user.id %}" style="color:red;">Deactivate</a>
+          {% else %}
+            <a href="{% url 'toggle-user-status' user.id %}" style="color:green;">Activate</a>
+          {% endif %}
         {% else %}
-          <a href="{% url 'toggle-user-status' user.id %}" style="color:green;">Reactivate</a>
+          <span style="color:gray;">Admin — No Actions</span>
         {% endif %}
       </td>
     </tr>

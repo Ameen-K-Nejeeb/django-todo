@@ -15,6 +15,9 @@ from django.views.generic import TemplateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+
 
 # Create your views here.
 
@@ -30,7 +33,7 @@ def toggle_user_status(request, user_id):
     return redirect('admin-dashboard')
 
 
-
+@method_decorator(never_cache, name='dispatch')
 class CustomLoginView(LoginView):
     template_name = 'login.html'
     fields = '__all__'
@@ -40,7 +43,7 @@ class CustomLoginView(LoginView):
         return reverse_lazy('tasks')
     
 
-
+@method_decorator(never_cache, name='dispatch')
 class RegisterPage(FormView):
     template_name = 'register.html'
     form_class = CustomUserCreationForm
@@ -60,12 +63,12 @@ class RegisterPage(FormView):
 
     
      
-
+@method_decorator(never_cache, name='dispatch')
 class CustomLogoutView(LogoutView):
     next_page = 'login'
 
 
-
+@method_decorator(never_cache, name='dispatch')
 class TaskList(LoginRequiredMixin,ListView):
     model = Task
     context_object_name = 'tasks'
@@ -92,12 +95,13 @@ class TaskList(LoginRequiredMixin,ListView):
 
 
     
-
+@method_decorator(never_cache, name='dispatch')
 class TaskDetail(LoginRequiredMixin,DetailView):
     model = Task
     template_name = 'task_detail.html'
     context_object_name = 'title'
-     
+    
+@method_decorator(never_cache, name='dispatch')
 class TaskCreate(LoginRequiredMixin,CreateView):
     model = Task
     fields = ['title','description','complete']
@@ -108,13 +112,15 @@ class TaskCreate(LoginRequiredMixin,CreateView):
         form.instance.user = self.request.user
         return super(TaskCreate,self).form_valid(form)
 
-
+@method_decorator(never_cache, name='dispatch')
 class TaskUpdate(LoginRequiredMixin,UpdateView):
     model = Task
     fields = ['title','description','complete']
     template_name = 'task_form.html'
     success_url = reverse_lazy('tasks')
 
+
+@method_decorator(never_cache, name='dispatch')
 class TaskDelete(LoginRequiredMixin,DeleteView):
     model = Task
     context_object_name = 'task'
@@ -122,6 +128,7 @@ class TaskDelete(LoginRequiredMixin,DeleteView):
     template_name = 'task_confirm_delete.html'
 
 
+@method_decorator(never_cache, name='dispatch')
 class AdminLoginView(LoginView):
     template_name = 'admin_login.html'
 
@@ -144,12 +151,12 @@ class AdminLoginView(LoginView):
         return reverse_lazy('admin-dashboard')
 
 
-# ✅ Admin Logout View
+@method_decorator(never_cache, name='dispatch')
 class AdminLogoutView(LogoutView):
     next_page = 'admin-login'
 
 
-# ✅ Admin Dashboard (only admin can access)
+@method_decorator(never_cache, name='dispatch')
 class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'admin_dashboard.html'
 
@@ -167,7 +174,7 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
 
 
-# ✅ Edit User (only admin)
+@method_decorator(never_cache, name='dispatch')
 class AdminUserEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     fields = ['username', 'email']
