@@ -2,6 +2,20 @@
 {% block content %}
 <div class="header-bar" style="justify-content:center;">
   <h2>Admin Login</h2>
+
+  {% if request.user.is_authenticated %}
+    <h2>Admin({{request.user.username}}) Dashboard</h2>
+  <br><form method="POST" action= "{% url 'admin-logout' %}" >
+    {% csrf_token %}
+    <!-- <a href="{% url 'logout' %}">Logout</a> -->
+    <button style="margin-left: 40%;" type="submit" class="button">Logout</button>
+
+  </form>
+  {% else %}
+  <a class="button" href="{% url 'admin-login'  %}">Login</a>
+
+  {% endif %}
+
 </div>
 
 <div class="card-body">
