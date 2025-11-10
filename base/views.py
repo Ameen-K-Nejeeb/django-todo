@@ -5,7 +5,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
 
 from django.contrib.auth.views import LoginView,LogoutView
-from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm
 from django.contrib.auth import login,logout
 
 from django.contrib.auth.models import User
@@ -14,8 +14,21 @@ from django.views.generic import TemplateView, UpdateView
 
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
+
+def toggle_user_status(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if user.is_active:
+        user.is_active = False
+        messages.error(request, f"{user.username} has been deactivated.")
+    else:
+        user.is_active = True
+        messages.success(request, f"{user.username} has been reactivated.")
+    user.save()
+    return redirect('admin-dashboard')
+
 
 
 class CustomLoginView(LoginView):
@@ -25,24 +38,26 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('tasks')
+    
 
 
 class RegisterPage(FormView):
     template_name = 'register.html'
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     redirect_authenticated_user = True
     success_url = reverse_lazy('tasks')
 
-    def form_valid(self,form):
+    def form_valid(self, form):
         user = form.save()
         if user is not None:
             login(self.request, user)
         return super(RegisterPage, self).form_valid(form)
     
-    def get(self,*args, **kwargs):
+    def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
             return redirect('tasks')
-        return super(RegisterPage,self).get(*args, **kwargs)
+        return super(RegisterPage, self).get(*args, **kwargs)
+
     
      
 
@@ -147,8 +162,9 @@ class AdminDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['users'] = User.objects.all()
+        context['users'] = User.objects.all().order_by('-is_active')
         return context
+
 
 
 # ✅ Edit User (only admin)
