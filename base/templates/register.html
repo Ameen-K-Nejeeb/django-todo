@@ -1,24 +1,40 @@
 {% extends "main.html" %}
-
 {% block content %}
-
-
-<div class="header-bar">
-    <h1>Register</h1>
-
+<div class="header-bar" style="justify-content:center;">
+  {% if request.user.is_staff or request.user.is_superuser %}
+    <h2>Admin: Register New User</h2>
+  {% else %}
+    <h2>Create Your Account</h2>
+  {% endif %}
 </div>
+
 <div class="card-body">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <p style="color:red;">{{ message }}</p>
+      {% elif message.tags == 'success' %}
+        <p style="color:green;">{{ message }}</p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 
-    <form action="" method="POST">
+  <form method="post">
     {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" class="button" value="Register">
+    {{ form.as_p }}
 
-</form>
+    {% if request.user.is_staff or request.user.is_superuser %}
+      <button type="submit" class="button">Register User</button>
+    {% else %}
+      <button type="submit" class="button">Sign Up</button>
+    {% endif %}
+  </form>
 
-<p>Already have an account? <a href="{% url 'login'  %}">Login</a></p>
-
-    
+  <br>
+  {% if request.user.is_staff or request.user.is_superuser %}
+    <a href="{% url 'admin-dashboard' %}" class="button" style="background-color: gray;">Back to Dashboard</a>
+  {% else %}
+    <a href="{% url 'login' %}" class="button" style="background-color: gray;">Back to Login</a>
+  {% endif %}
 </div>
-
-{% endblock content %}
+{% endblock %}

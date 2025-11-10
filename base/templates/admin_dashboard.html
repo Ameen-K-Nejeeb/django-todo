@@ -1,14 +1,24 @@
 {% extends "main.html" %}
 {% block content %}
 <div class="header-bar" style="justify-content:space-between;">
-  
   {% if request.user.is_authenticated %}
     <h2>Admin ({{ request.user.username }}) Dashboard</h2>
+
+    <div class="card-body" style="display:flex; justify-content:space-between; align-items:center;">
+      
+      <div>
+        <!-- Removed admin-user-create since not needed -->
+        <a href="{% url 'admin-register-user' %}" class="button" 
+           style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
+           Register
+        </a>
+      </div>
+    </div>
+
     <form method="POST" action="{% url 'admin-logout' %}">
       {% csrf_token %}
       <button type="submit" class="button">Logout</button>
     </form>
-
   {% endif %}
 </div>
 
@@ -35,30 +45,30 @@
     </tr>
 
     {% for user in users %}
-    <tr>
-      <td>{{ user.id }}</td>
-      <td>{{ user.username }}</td>
-      <td>{{ user.email }}</td>
-      <td>
-        {% if user.is_active %}
-          <span style="color:green;">Active</span>
-        {% else %}
-          <span style="color:red;">Inactive</span>
-        {% endif %}
-      </td>
-      <td>
-        {% if not user.is_superuser and not user.is_staff %}
-          <a href="{% url 'admin-user-edit' user.id %}">Edit</a> |
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>
           {% if user.is_active %}
-            <a href="{% url 'toggle-user-status' user.id %}" style="color:red;">Deactivate</a>
+            <span style="color:green;">Active</span>
           {% else %}
-            <a href="{% url 'toggle-user-status' user.id %}" style="color:green;">Activate</a>
+            <span style="color:red;">Inactive</span>
           {% endif %}
-        {% else %}
-          <span style="color:gray;">Admin — No Actions</span>
-        {% endif %}
-      </td>
-    </tr>
+        </td>
+        <td>
+          {% if not user.is_superuser and not user.is_staff %}
+            <a href="{% url 'admin-user-edit' user.id %}">Edit</a> |
+            {% if user.is_active %}
+              <a href="{% url 'toggle-user-status' user.id %}" style="color:red;">Deactivate</a>
+            {% else %}
+              <a href="{% url 'toggle-user-status' user.id %}" style="color:green;">Activate</a>
+            {% endif %}
+          {% else %}
+            <span style="color:gray;">Admin — No Actions</span>
+          {% endif %}
+        </td>
+      </tr>
     {% endfor %}
   </table>
 </div>

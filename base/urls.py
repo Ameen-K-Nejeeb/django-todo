@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     TaskList, TaskDetail, TaskCreate, TaskUpdate, RegisterPage,
-    TaskDelete, CustomLoginView, CustomLogoutView,toggle_user_status
+    TaskDelete, CustomLoginView, CustomLogoutView,toggle_user_status,AdminRegisterUserView
 )
 from .views import AdminLoginView, AdminDashboardView, AdminUserEditView, AdminLogoutView
 
@@ -21,6 +21,8 @@ urlpatterns = [
     path('admin-user/<int:pk>/edit/', AdminUserEditView.as_view(), name='admin-user-edit'),
     path('admin-logout/', AdminLogoutView.as_view(), name='admin-logout'),
     path('toggle-user-status/<int:user_id>/', toggle_user_status, name='toggle-user-status'),
+    path('admin-register-user/', AdminRegisterUserView.as_view(), name='admin-register-user'),
+
 
 
 

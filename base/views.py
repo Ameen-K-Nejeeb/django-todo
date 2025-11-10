@@ -149,6 +149,31 @@ class AdminLoginView(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('admin-dashboard')
+    
+@method_decorator(never_cache, name='dispatch')
+class AdminRegisterUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = User
+    form_class = CustomUserCreationForm
+    template_name = 'register.html'  # reuse register page
+    success_url = reverse_lazy('admin-dashboard')
+
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Admin access required.")
+        return redirect('admin-login')
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.is_staff = False
+        user.is_superuser = False
+        user.save()
+        messages.success(self.request, f"User '{user.username}' created successfully.")
+        return super().form_valid(form)
+
+
+
 
 
 @method_decorator(never_cache, name='dispatch')
