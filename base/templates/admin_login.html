@@ -6,8 +6,8 @@
 
 <div class="card-body">
   {% if messages %}
-    {% for m in messages %}
-      <p style="color:red;">{{ m }}</p>
+    {% for message in messages %}
+      <p style="color:red;">{{ message }}</p>
     {% endfor %}
   {% endif %}
 

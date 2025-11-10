@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView,FormView
 
 from django.contrib.auth.views import LoginView,LogoutView
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth import login,logout
 
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -110,12 +110,24 @@ class TaskDelete(LoginRequiredMixin,DeleteView):
 class AdminLoginView(LoginView):
     template_name = 'admin_login.html'
 
+    def form_valid(self, form):
+        """Runs when username/password are correct."""
+        user = form.get_user()
+        if user.is_staff or user.is_superuser:
+            return super().form_valid(form)
+        else:
+            messages.error(self.request, "Access denied: Only admins can access this page.")
+            logout(self.request)
+            return redirect('admin-login')
+
+    def form_invalid(self, form):
+        """Runs when username/password are wrong."""
+        messages.error(self.request, "Invalid username or password!")
+        return self.render_to_response(self.get_context_data(form=form))
+
     def get_success_url(self):
-        # Allow only staff/superusers
-        if self.request.user.is_staff or self.request.user.is_superuser:
-            return reverse_lazy('admin-dashboard')
-        messages.error(self.request, "Access Denied: Only Admins can log in here.")
-        return reverse_lazy('login')
+        return reverse_lazy('admin-dashboard')
+
 
 # ✅ Admin Logout View
 class AdminLogoutView(LogoutView):
