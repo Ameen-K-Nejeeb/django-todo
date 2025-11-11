@@ -32,11 +32,10 @@ class NoCacheMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
-        # ✅ Paths where caching should be disabled
         no_cache_paths = [
             '/login/',
             '/register/',
-            '/tasks/',                # user dashboard
+            '/tasks/',              
             '/admin-login/',
             '/admin-dashboard/',
         ]

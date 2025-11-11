@@ -150,6 +150,8 @@ class AdminLoginView(LoginView):
     def get_success_url(self):
         return reverse_lazy('admin-dashboard')
     
+
+    
 @method_decorator(never_cache, name='dispatch')
 class AdminRegisterUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = User
