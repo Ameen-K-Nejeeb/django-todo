@@ -34,7 +34,7 @@
   {% if request.user.is_staff or request.user.is_superuser %}
     <a href="{% url 'admin-dashboard' %}" class="button" style="background-color: gray;">Back to Dashboard</a>
   {% else %}
-    <a href="{% url 'login' %}" class="button" style="background-color: gray;">Back to Login</a>
+    <p> have an account yet!? <a href="{% url 'login' %}">Login</a></p>
   {% endif %}
 </div>
 {% endblock %}
