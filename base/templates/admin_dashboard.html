@@ -22,6 +22,89 @@
   {% endif %}
 </div>
 
+
+
+<style>
+    /* 1. Center the whole search area */
+    
+
+    /* 2. Align input and buttons in a row */
+    .search-form {
+        display: flex;
+        gap: 10px; /* Space between elements */
+        align-items: center;
+        background: #fff;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 0px; /* Makes it pill-shaped */
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Adds a subtle shadow */
+        border: 1px solid #ddd;
+    }
+
+    /* 3. Style the Input Field */
+    .search-input {
+        border: none;
+        outline: none;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 50px;
+        width: 250px; /* Adjust width as needed */
+    }
+
+    /* 4. Style the Search Button */
+    .btn-search {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn-search:hover {
+        background-color: #45a049;
+    }
+
+    /* 5. Style the Clear Button */
+    .btn-clear {
+        text-decoration: none;
+        color: #666;
+        font-size: 14px;
+        padding-right: 15px; /* Space on the right */
+        font-weight: 500;
+    }
+
+    .btn-clear:hover {
+        color: #ff4444; /* Red on hover */
+    }
+</style>
+
+<div class="search-wrapper">
+    <form method="GET" action="" class="search-form">
+        
+        <input 
+            type="text" 
+            name="search_query" 
+            class="search-input"
+            value="{{ search_query }}" 
+            placeholder="Search users..."
+        >
+        
+        <button type="submit" class="btn-search">
+            Search
+        </button>
+
+        {% if search_query %}
+            <a href="{% url 'admin-dashboard' %}" class="btn-clear">✕ Clear</a>
+        {% endif %}
+        
+    </form>
+</div>
+
+
+
 <div class="card-body">
   {% if messages %}
     {% for message in messages %}

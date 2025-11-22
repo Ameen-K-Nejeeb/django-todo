@@ -49,8 +49,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'base.middleware.RestrictBackAfterLoginMiddleware',
-    'base.middleware.NoCacheMiddleware',
+    # 'base.middleware.RestrictBackAfterLoginMiddleware',
+    # 'base.middleware.NoCacheMiddleware',
 
 ]
 

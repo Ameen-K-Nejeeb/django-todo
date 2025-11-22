@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from .models import Task
 from .forms import CustomUserCreationForm, TaskForm, UserEditForm
+from django.db.models import Q
 
 # --- Helper Function for Admin Check ---
 def is_admin(user):
@@ -58,6 +59,9 @@ def task_list(request):
     tasks = Task.objects.filter(user=request.user)
     count = tasks.filter(complete=False).count()
 
+    if request.user.is_staff or request.user.is_superuser:
+        return redirect('admin-dashboard')
+
     search_input = request.GET.get('search-area') or ''
     if search_input:
         tasks = tasks.filter(title__istartswith=search_input)
@@ -75,6 +79,8 @@ def task_detail(request, pk):
     task = get_object_or_404(Task, pk=pk)
     return render(request, 'task_detail.html', {'title': task})
 
+
+
 @login_required(login_url='login')
 @never_cache
 def task_create(request):
@@ -89,6 +95,8 @@ def task_create(request):
         form = TaskForm()
         
     return render(request, 'task_form.html', {'form': form})
+
+
 
 @never_cache
 @login_required(login_url='login')
@@ -105,6 +113,9 @@ def task_update(request, pk):
         
     return render(request, 'task_form.html', {'form': form})
 
+
+
+
 @never_cache
 @login_required(login_url='login')
 def task_delete(request, pk):
@@ -115,6 +126,10 @@ def task_delete(request, pk):
         return redirect('tasks')
         
     return render(request, 'task_confirm_delete.html', {'task': task})
+
+
+
+
 
 # --- Admin Views ---
 
@@ -137,12 +152,26 @@ def admin_login_view(request):
 
     return render(request, 'admin_login.html', {'form': form})
 
+
+
 @never_cache
 @login_required(login_url='admin-login')
 @user_passes_test(is_admin, login_url='admin-login')
 def admin_dashboard_view(request):
     users = User.objects.all().order_by('-is_active')
-    return render(request, 'admin_dashboard.html', {'users': users})
+
+    search_query = request.GET.get('search_query')
+    if search_query:
+        users = users.filter( Q(username__icontains=search_query) | Q(email__icontains=search_query))
+
+    context = {
+        'users':users,
+        'search_query': search_query if search_query else ''
+    }
+
+    return render(request, 'admin_dashboard.html', context)
+
+
 
 @never_cache
 @login_required(login_url='admin-login')
@@ -162,6 +191,8 @@ def admin_register_user_view(request):
         
     return render(request, 'register.html', {'form': form})
 
+
+
 @never_cache
 @login_required(login_url='admin-login')
 @user_passes_test(is_admin, login_url='admin-login')
@@ -178,10 +209,14 @@ def admin_user_edit_view(request, pk):
         
     return render(request, 'admin_user_edit.html', {'form': form})
 
+
+
 @never_cache
 def admin_logout_view(request):
     logout(request)
     return redirect('admin-login')
+
+
 
 # This one was already an FBV, keeping it as is
 @never_cache
