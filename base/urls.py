@@ -1,29 +1,22 @@
 from django.urls import path
-from .views import (
-    TaskList, TaskDetail, TaskCreate, TaskUpdate, RegisterPage,
-    TaskDelete, CustomLoginView, CustomLogoutView,toggle_user_status,AdminRegisterUserView
-)
-from .views import AdminLoginView, AdminDashboardView, AdminUserEditView, AdminLogoutView
-
+from . import views
 
 urlpatterns = [
-    path('login/',CustomLoginView.as_view(), name = "login"),
-    path('register/',RegisterPage.as_view(), name = "register"),
-    path('logout/', CustomLogoutView.as_view(), name="logout"),
-    path('',TaskList.as_view(), name = "tasks"),
-    path('task/<int:pk>/',TaskDetail.as_view(),name = "task"), 
-    path('task-create/',TaskCreate.as_view(),name = "task-create"),
-    path('task-update/<int:pk>/',TaskUpdate.as_view(), name = "task-update"),
-    path('task-delete/<int:pk>/',TaskDelete.as_view(), name = "task-delete"),
+    # User Paths
+    path('login/', views.custom_login_view, name="login"),
+    path('register/', views.register_page, name="register"),
+    path('logout/', views.custom_logout_view, name="logout"),
+    path('', views.task_list, name="tasks"),
+    path('task/<int:pk>/', views.task_detail, name="task"), 
+    path('task-create/', views.task_create, name="task-create"),
+    path('task-update/<int:pk>/', views.task_update, name="task-update"),
+    path('task-delete/<int:pk>/', views.task_delete, name="task-delete"),
 
-    path('admin/', AdminLoginView.as_view(), name='admin-login'),
-    path('admin-dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
-    path('admin-user/<int:pk>/edit/', AdminUserEditView.as_view(), name='admin-user-edit'),
-    path('admin-logout/', AdminLogoutView.as_view(), name='admin-logout'),
-    path('toggle-user-status/<int:user_id>/', toggle_user_status, name='toggle-user-status'),
-    path('admin-register-user/', AdminRegisterUserView.as_view(), name='admin-register-user'),
-
-
-
-
+    # Admin Paths
+    path('admin/', views.admin_login_view, name='admin-login'),
+    path('admin-dashboard/', views.admin_dashboard_view, name='admin-dashboard'),
+    path('admin-user/<int:pk>/edit/', views.admin_user_edit_view, name='admin-user-edit'),
+    path('admin-logout/', views.admin_logout_view, name='admin-logout'),
+    path('toggle-user-status/<int:user_id>/', views.toggle_user_status, name='toggle-user-status'),
+    path('admin-register-user/', views.admin_register_user_view, name='admin-register-user'),
 ]

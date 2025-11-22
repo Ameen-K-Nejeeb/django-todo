@@ -2,80 +2,148 @@
 
 {% block content %}
 
+<style>
+    /* This is the main wrapper for the search and add button.
+      It uses flex to put them side-by-side.
+      It matches the ID you already had in your main.html.
+    */
+    #search-add-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid #e0e4ee; /* Separator line */
+    }
+
+    /* This targets the form *inside* the wrapper.
+      It also uses flex to join the text input and search button.
+    */
+    #search-add-wrapper form {
+        flex-grow: 1; /* Makes the form take up most of the space */
+        display: flex;
+        margin: 0; /* Removes default form margin */
+    }
+
+    /* This styles the text input *inside* the search wrapper.
+    */
+    #search-add-wrapper input[type="text"] {
+        flex-grow: 1; /* Makes the input field fill the form */
+        border: 1px solid #d1d5db;
+        border-radius: 6px 0 0 6px; /* Rounded corners only on the left */
+        padding: 10px 14px;
+        font-size: 15px;
+        width: auto; /* Overrides the 'width: 90%' from main.html */
+        margin-right: -1px; /* Joins the input to the button */
+    }
+
+    /* Style for when the input is focused */
+    #search-add-wrapper input[type="text"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+    }
+
+    /* This styles the button *inside* the search wrapper.
+      It uses the .button class you already have.
+    */
+    #search-add-wrapper .button {
+        border-radius: 0 6px 6px 0; /* Rounded corners only on the right */
+    }
+
+    /* This styles the '+' add link.
+      It uses the ID you already have in your HTML.
+    */
+    #add-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;  /* Makes it a nice square */
+        height: 42px; /* Matches the search bar height */
+        background: #667eea; /* Theme color from main.html */
+        color: white;
+        text-decoration: none;
+        font-size: 28px;
+        font-weight: 300;
+        border-radius: 6px;
+        margin-left: 10px; /* Adds space between search and add */
+        transition: all 0.3s ease;
+        text-shadow: none; /* Overrides the shadow from main.html */
+    }
+
+    #add-link:hover {
+        background: #764ba2; /* Second color from your gradient */
+        transform: scale(1.05);
+    }
+
+    /* A new style for your "No items" message */
+    .empty-list-message {
+        text-align: center;
+        color: #888;
+        padding: 40px 20px;
+        font-size: 18px;
+        font-style: italic;
+        font-weight: 400;
+    }
+
+</style>
+
 
 <div class="header-bar">
-  <div>
-    <h1>Hello {{request.user |title}}</h1>
-    <h3 style="margin: 0;">
-      You have <i>{{ count }} incomplete task{{ count|pluralize:"s" }}</i>
-    </h3>
+  <div>
+    <h1>Hello {{request.user |title}}</h1>
+    <h3 style="margin: 0;">
+      You have <i>{{ count }} incomplete task{{ count|pluralize:"s" }}</i>
+    </h3>
+  </div>
+
+  {% if request.user.is_authenticated %}
+  <div style="text-align: right;">
+    <p style="color: #FAFAFA; margin: 0 0 8px 0;">Welcome, <strong>{{ request.user.username }}</strong>!</p>
+    <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+      {% csrf_token %}
+      <button type="submit" class="button">Logout</button>
+    </form>
   </div>
-
-  {% if request.user.is_authenticated %}
-  <p style = "color: #FAFAFA;">Welcome, <strong>{{ request.user.username }}</strong>!</p>
-  <form method="POST" action= "{% url 'logout' %}" >
-    {% csrf_token %}
-    <!-- <a href="{% url 'logout' %}">Logout</a> -->
-    <button type="submit" class="button">Logout</button>
-
-  </form>
-  {% else %}
-  <a href="{% url 'login'  %}">Login</a>
-
-  {% endif %}
-
+  {% else %}
+  <a href="{% url 'login' %}" class="button">Login</a>
+  {% endif %}
 </div>
 
 
-
-
-
-<!-- <h1>My To Do Lists {{color}}</h1>
-<a href="{% url 'task-create'  %}">Add item</a>
-<form action="" method="GET">
-  <input type="text" name="search-area" value="{{search_input}}">
-  <input type="submit" value="Search">
-</form> -->
-
-<div class="search-add-wrapper">
-  <form action="" method="GET", style="margin-top: 20px; display: flex;">
-  <input type="text" name="search-area" value="{{search_input}}">
-  <input type="submit" value="Search" class = 'button'>
-</form>
-<a id = 'add-link' href="{% url 'task-create'  %}">+</a>
+<div id="search-add-wrapper">
+  
+  <form action="" method="GET">
+    <input type="text" name="search-area" value="{{search_input}}" placeholder="Search your tasks...">
+    <input type="submit" value="Search" class="button">
+  </form>
+  
+  <a id="add-link" href="{% url 'task-create' %}">+</a>
 
 </div>
 
 
 <div class="task-items-wrapper">
- 
+
   {% for task in tasks %}
   <div class="task-wrapper">
     {% if task.complete %}
     <div class="task-title">
       <div class="task-complete-icon"></div>
       <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i>
-
-
     </div>
     <a class='delete-link' href="{% url 'task-delete' task.id %}">&#215;</a>
     {% else %}
     <div class="task-title">
       <div class="task-incomplete-icon"></div>
       <a href="{% url 'task-update' task.id %}">{{task}}</a>
-
     </div>
     <a class='delete-link' href="{% url 'task-delete' task.id %}">&#215;</a>
-
     {% endif %}
   </div>
   {% empty %}
-  <h3>No items in list</h3>
+  <h3 class="empty-list-message">No items in list</h3>
   {% endfor %}
 
 </div>
-
-
-
 
 {% endblock content %}
