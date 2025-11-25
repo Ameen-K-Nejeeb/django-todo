@@ -17,7 +17,10 @@ def is_admin(user):
 
 @never_cache
 def custom_login_view(request):
+    # FIX: Check User Type before redirecting
     if request.user.is_authenticated:
+        if is_admin(request.user):
+            return redirect('admin-dashboard')
         return redirect('tasks')
     
     if request.method == 'POST':
@@ -25,15 +28,22 @@ def custom_login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            # FIX: Redirect based on user type after login
+            if is_admin(user):
+                return redirect('admin-dashboard')
             return redirect('tasks')
     else:
         form = AuthenticationForm()
     
     return render(request, 'login.html', {'form': form})
 
+
 @never_cache
 def register_page(request):
+    # FIX: Check User Type before redirecting
     if request.user.is_authenticated:
+        if is_admin(request.user):
+            return redirect('admin-dashboard')
         return redirect('tasks')
 
     if request.method == 'POST':
@@ -52,7 +62,7 @@ def register_page(request):
 def custom_logout_view(request):
     logout(request)
     return redirect('login')
-
+ 
 @never_cache
 @login_required(login_url='login')
 def task_list(request):
@@ -135,6 +145,14 @@ def task_delete(request, pk):
 
 @never_cache
 def admin_login_view(request):
+    # FIX: Prevent Admin from seeing login page if already logged in
+    if request.user.is_authenticated:
+        if is_admin(request.user):
+            return redirect('admin-dashboard')
+        else:
+            # If a regular user tries to access admin login, redirect them to tasks
+            return redirect('tasks')
+
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -144,7 +162,7 @@ def admin_login_view(request):
                 return redirect('admin-dashboard')
             else:
                 messages.error(request, "Access denied: Only admins can access this page.")
-                # Don't login non-admins here
+        
         else:
             messages.error(request, "Invalid username or password!")
     else:

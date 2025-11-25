@@ -18,12 +18,12 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ['title', 'description', 'complete']
 
-class UserEditForm(forms.ModelForm):
+class UserEditForm(forms.ModelForm):#task
     class Meta:
         model = User
         fields = ['username', 'email']
 
-class UserEditForm(forms.ModelForm):
+class UserEditForm(forms.ModelForm):#admin
     class Meta:
         model = User
         fields = ['username','email']
