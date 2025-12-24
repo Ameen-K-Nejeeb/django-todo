@@ -9,15 +9,15 @@ from .models import Task
 from .forms import CustomUserCreationForm, TaskForm, UserEditForm
 from django.db.models import Q
 
-# --- Helper Function for Admin Check ---
+
 def is_admin(user):
     return user.is_staff or user.is_superuser
 
-# --- User Views ---
+
 
 @never_cache
 def custom_login_view(request):
-    # FIX: Check User Type before redirecting
+
     if request.user.is_authenticated:
         if is_admin(request.user):
             return redirect('admin-dashboard')
@@ -28,7 +28,7 @@ def custom_login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            # FIX: Redirect based on user type after login
+
             if is_admin(user):
                 return redirect('admin-dashboard')
             return redirect('tasks')
@@ -40,7 +40,7 @@ def custom_login_view(request):
 
 @never_cache
 def register_page(request):
-    # FIX: Check User Type before redirecting
+
     if request.user.is_authenticated:
         if is_admin(request.user):
             return redirect('admin-dashboard')
