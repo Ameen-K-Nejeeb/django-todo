@@ -10,6 +10,7 @@ from .forms import CustomUserCreationForm, TaskForm, UserEditForm
 from django.db.models import Q
 
 
+
 def is_admin(user):
     return user.is_staff or user.is_superuser
 
@@ -193,7 +194,6 @@ def admin_dashboard_view(request):
     }
 
     return render(request, 'admin_dashboard.html', context)
-
 
 
 @never_cache

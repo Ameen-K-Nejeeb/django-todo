@@ -21,7 +21,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ['username', 'first_name', 'email', 'password1', 'password2']
 
-    # ✅ Name validation (only letters)
+    #  Name validation 
     def clean_first_name(self):
         name = self.cleaned_data.get('first_name')
 
@@ -31,7 +31,7 @@ class CustomUserCreationForm(UserCreationForm):
             )
         return name
 
-    # ✅ Email validation
+    #  Email validation
     def clean_email(self):
         email = self.cleaned_data.get('email')
 
@@ -46,7 +46,7 @@ class CustomUserCreationForm(UserCreationForm):
 
         return email
 
-    # ✅ Password match validation
+    #  Password match validation
     def clean(self):
         cleaned_data = super().clean()
         p1 = cleaned_data.get("password1")
