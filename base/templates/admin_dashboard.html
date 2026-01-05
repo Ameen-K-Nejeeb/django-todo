@@ -2,120 +2,122 @@
 {% block content %}
 <div class="header-bar" style="justify-content:space-between;">
   {% if request.user.is_authenticated %}
-    <h2>Admin ({{ request.user.username }}) Dashboard</h2>
+  <h2>Admin ({{ request.user.username }}) Dashboard</h2>
 
-    <div class="card-body" style="display:flex; justify-content:space-between; align-items:center;">
-      
-      <div>
-        <!-- Removed admin-user-create since not needed -->
-        <a href="{% url 'admin-register-user' %}" class="button" 
-           style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
-           Register
-        </a>
-      </div>
+  <div class="card-body" style="display:flex; justify-content:space-between; align-items:center;">
+
+    <div>
+      <!-- Removed admin-user-create since not needed -->
+      <a href="{% url 'admin-register-user' %}" class="button"
+        style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
+        Register
+      </a>
     </div>
+  </div>
 
-    <form method="POST" action="{% url 'admin-logout' %}">
-      {% csrf_token %}
-      <button type="submit" class="button">Logout</button>
-    </form>
+  <form method="POST" action="{% url 'admin-logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="button">Logout</button>
+  </form>
   {% endif %}
 </div>
 
 
 
 <style>
-    /* 1. Center the whole search area */
-    
+  /* 1. Center the whole search area */
 
-    /* 2. Align input and buttons in a row */
-    .search-form {
-        display: flex;
-        gap: 10px; /* Space between elements */
-        align-items: center;
-        background: #fff;
-        padding: 10px;
-        margin-top: 5px;
-        border-radius: 0px; /* Makes it pill-shaped */
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Adds a subtle shadow */
-        border: 1px solid #ddd;
-    }
 
-    /* 3. Style the Input Field */
-    .search-input {
-        border: none;
-        outline: none;
-        padding: 10px 15px;
-        font-size: 16px;
-        border-radius: 50px;
-        width: 250px; /* Adjust width as needed */
-    }
+  /* 2. Align input and buttons in a row */
+  .search-form {
+    display: flex;
+    gap: 10px;
+    /* Space between elements */
+    align-items: center;
+    background: #fff;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 0px;
+    /* Makes it pill-shaped */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Adds a subtle shadow */
+    border: 1px solid #ddd;
+  }
 
-    /* 4. Style the Search Button */
-    .btn-search {
-        background-color: #4CAF50; /* Green */
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 50px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: 0.3s;
-    }
+  /* 3. Style the Input Field */
+  .search-input {
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 50px;
+    width: 250px;
+    /* Adjust width as needed */
+  }
 
-    .btn-search:hover {
-        background-color: #45a049;
-    }
+  /* 4. Style the Search Button */
+  .btn-search {
+    background-color: #4CAF50;
+    /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
 
-    /* 5. Style the Clear Button */
-    .btn-clear {
-        text-decoration: none;
-        color: #666;
-        font-size: 14px;
-        padding-right: 15px; /* Space on the right */
-        font-weight: 500;
-    }
+  .btn-search:hover {
+    background-color: #45a049;
+  }
 
-    .btn-clear:hover {
-        color: #ff4444; /* Red on hover */
-    }
+  /* 5. Style the Clear Button */
+  .btn-clear {
+    text-decoration: none;
+    color: #666;
+    font-size: 14px;
+    padding-right: 15px;
+    /* Space on the right */
+    font-weight: 500;
+  }
+
+  .btn-clear:hover {
+    color: #ff4444;
+    /* Red on hover */
+  }
 </style>
 
 <div class="search-wrapper">
-    <form method="GET" action="" class="search-form">
-        
-        <input 
-            type="text" 
-            name="search_query" 
-            class="search-input"
-            value="{{ search_query }}" 
-            placeholder="Search users..."
-        >
-        
-        <button type="submit" class="btn-search">
-            Search
-        </button>
+  <form method="GET" action="" class="search-form">
 
-        {% if search_query %}
-            <a href="{% url 'admin-dashboard' %}" class="btn-clear">✕ Clear</a>
-        {% endif %}
-        
-    </form>
+    <input type="text" name="search_query" class="search-input" value="{{ search_query }}"
+      placeholder="Search users...">
+
+    <button type="submit" class="btn-search">
+      Search
+    </button>
+
+    {% if search_query %}
+    <a href="{% url 'admin-dashboard' %}" class="btn-clear">✕ Clear</a>
+    {% endif %}
+
+  </form>
 </div>
 
 
 
 <div class="card-body">
   {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == 'error' %}
-        <p style="color:red;">{{ message }}</p>
-      {% elif message.tags == 'success' %}
-        <p style="color:green;">{{ message }}</p>
-      {% else %}
-        <p>{{ message }}</p>
-      {% endif %}
-    {% endfor %}
+  {% for message in messages %}
+  {% if message.tags == 'error' %}
+  <p style="color:red;">{{ message }}</p>
+  {% elif message.tags == 'success' %}
+  <p style="color:green;">{{ message }}</p>
+  {% else %}
+  <p>{{ message }}</p>
+  {% endif %}
+  {% endfor %}
   {% endif %}
 
   <table border="1" cellpadding="10" style="width:100%; border-collapse: collapse;">
@@ -128,30 +130,47 @@
     </tr>
 
     {% for user in users %}
-      <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.email }}</td>
-        <td>
-          {% if user.is_active %}
-            <span style="color:green;">Active</span>
-          {% else %}
-            <span style="color:red;">Inactive</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if not user.is_superuser and not user.is_staff %}
-            <a href="{% url 'admin-user-edit' user.id %}">Edit</a> |
-            {% if user.is_active %}
-              <a href="{% url 'toggle-user-status' user.id %}" style="color:red;">Deactivate</a>
-            {% else %}
-              <a href="{% url 'toggle-user-status' user.id %}" style="color:green;">Activate</a>
-            {% endif %}
-          {% else %}
-            <span style="color:gray;">Admin — No Actions</span>
-          {% endif %}
-        </td>
-      </tr>
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>
+        {% if user.is_active %}
+        <span style="color:green;">Active</span>
+        {% else %}
+        <span style="color:red;">Inactive</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if not user.is_superuser and not user.is_staff %}
+
+        <a href="{% url 'admin-user-edit' user.id %}">Edit</a> |
+
+        {% if user.is_active %}
+        <form method="POST" action="{% url 'toggle-user-status' user.id %}" style="display:inline;"
+          onsubmit="return confirm('Are you sure you want to deactivate {{ user.username }}?');">
+          {% csrf_token %}
+          <button type="submit" style="color:red; background:none; border:none; cursor:pointer;">
+            Deactivate
+          </button>
+        </form>
+        {% else %}
+        <form method="POST" action="{% url 'toggle-user-status' user.id %}" style="display:inline;"
+          onsubmit="return confirm('Do you want to activate {{ user.username }} again?');">
+          {% csrf_token %}
+          <button type="submit" style="color:green; background:none; border:none; cursor:pointer;">
+            Activate
+          </button>
+        </form>
+        {% endif %}
+
+        {% else %}
+        <span style="color:gray;">Admin — No Actions</span>
+        {% endif %}
+      </td>
+
+
+    </tr>
     {% endfor %}
   </table>
 </div>

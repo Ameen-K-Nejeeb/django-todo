@@ -42,16 +42,21 @@ def custom_login_view(request):
 def register_page(request):
 
     if request.user.is_authenticated:
-        if is_admin(request.user):
+        if request.user.is_staff or request.user.is_superuser:
             return redirect('admin-dashboard')
         return redirect('tasks')
 
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
+
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Account created successfully!")
             return redirect('tasks')
+        else:
+            messages.error(request, "Please fix the errors below.")
+
     else:
         form = CustomUserCreationForm()
 
@@ -241,12 +246,19 @@ def admin_logout_view(request):
 @login_required(login_url='admin-login')
 @user_passes_test(is_admin, login_url='admin-login')
 def toggle_user_status(request, user_id):
+
+    if request.method != "POST":
+        messages.error(request, "Invalid request.")
+        return redirect('admin-dashboard')
+
     user = get_object_or_404(User, id=user_id)
+
     if user.is_active:
         user.is_active = False
         messages.error(request, f"{user.username} has been deactivated.")
     else:
         user.is_active = True
         messages.success(request, f"{user.username} has been reactivated.")
+
     user.save()
     return redirect('admin-dashboard')
