@@ -185,7 +185,7 @@ def admin_dashboard_view(request):
 
     search_query = request.GET.get('search_query')
     if search_query:
-        users = users.filter( Q(username__icontains=search_query) | Q(email__icontains=search_query))
+        users = users.filter( Q(username__istartswith=search_query) | Q(email__istartswith=search_query))
 
     context = {
         'users':users,
