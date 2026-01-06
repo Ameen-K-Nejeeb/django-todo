@@ -84,8 +84,65 @@
 
   .btn-clear:hover {
     color: #ff4444;
-    /* Red on hover */
-  }
+ }
+  /* ---------------------------------------------------------------------------------- */
+
+  .pagination-wrapper {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-top: 25px;
+  padding: 10px 0;
+}
+
+/* Previous & Next */
+.pagination-prev a,
+.pagination-next a {
+  font-weight: bold;
+  color: #4CAF50;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-prev {
+  text-align: left;
+}
+
+.pagination-next {
+  text-align: right;
+}
+
+/* Page Numbers */
+.pagination-pages {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.pagination-pages .page {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.pagination-pages .page:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.pagination-pages .active {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+  cursor: default;
+}
+
+
 </style>
 
 <div class="search-wrapper">
@@ -174,4 +231,50 @@
     {% endfor %}
   </table>
 </div>
+
+
+
+<!-- PAGINATION START -->
+{% if users.paginator.num_pages > 1 %}
+<div class="pagination-wrapper">
+
+  <!-- Previous -->
+  <div class="pagination-prev">
+    {% if users.has_previous %}
+      <a href="?page={{ users.previous_page_number }}{% if search_query %}&search_query={{ search_query }}{% endif %}">
+        ← Previous
+      </a>
+    {% endif %}
+  </div>
+
+  <!-- Page Numbers -->
+  <div class="pagination-pages">
+    {% for num in users.paginator.page_range %}
+      {% if num == users.number %}
+        <span class="page active">{{ num }}</span>
+      {% else %}
+        <a class="page"
+           href="?page={{ num }}{% if search_query %}&search_query={{ search_query }}{% endif %}">
+          {{ num }}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Next -->
+  <div class="pagination-next">
+    {% if users.has_next %}
+      <a href="?page={{ users.next_page_number }}{% if search_query %}&search_query={{ search_query }}{% endif %}">
+        Next →
+      </a>
+    {% endif %}
+  </div>
+
+</div>
+{% endif %}
+<!-- PAGINATION END -->
+
+
+
+
 {% endblock %}
