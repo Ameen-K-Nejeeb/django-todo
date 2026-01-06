@@ -182,13 +182,13 @@ def admin_login_view(request):
 @login_required(login_url='admin-login')
 @user_passes_test(is_admin, login_url='admin-login')
 def admin_dashboard_view(request):
-    users_qs = User.objects.all().order_by('-is_active')
+    users = User.objects.all().order_by('-is_active')
 
     search_query = request.GET.get('search_query')
     if search_query:
         users = users.filter( Q(username__istartswith=search_query) | Q(email__istartswith=search_query))
 
-    paginator = Paginator(users_qs, 5)
+    paginator = Paginator(users, 5)
     page_number = request.GET.get('page')
     users = paginator.get_page(page_number)
 
