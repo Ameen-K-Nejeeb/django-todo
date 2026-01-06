@@ -188,7 +188,7 @@
 
     {% for user in users %}
     <tr>
-      <td>{{ forloop.counter }}</td>
+      <td>{{ users.start_index|add:forloop.counter0 }}</td>
       <td>{{ user.username }}</td>
       <td>{{ user.email }}</td>
       <td>
